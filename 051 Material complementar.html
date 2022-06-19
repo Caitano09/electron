@@ -1,0 +1,70 @@
+<html>
+                <head>
+                <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+                <title>051 Material complementar</title>
+                </head>
+                <body>
+                <div class="container">
+                <div class="row">
+                <div class="col-md-10 col-md-offset-1">
+                    <p class="lead"><h4>Material complementar para a aula "Empacotando sua aplicação"</h4><p><br></p><p>Esta é a página do Electron Packager no GitHub:</p><p><a href="https://github.com/electron-userland/electron-packager" rel="noopener noreferrer" target="_blank">https://github.com/electron-userland/electron-packager</a></p><p><br></p><p>Comando do electron-packager:</p><p><strong>electron-packager ..\terap cronometro --platform=win32,darwin,linux --arch=x64 --icon=..\bkp-terap\robot.ico --executable-name=cronometro --win32metadata.ProductName="Cronometro" --win32metadata.CompanyName="MF" --overwrite</strong></p><p><br></p><p>Página da documentação com as opções para esta linha de comando:</p><p><a href="https://github.com/electron-userland/electron-packager/blob/master/usage.txt" rel="noopener noreferrer" target="_blank">https://github.com/electron-userland/electron-packager/blob/master/usage.txt</a></p><p><br></p><p>Página com relação dos programas de geração do instalador:</p><p><a href="https://github.com/electron-userland/electron-packager#distributable-creators" rel="noopener noreferrer" target="_blank">https://github.com/electron-userland/electron-packager#distributable-creators</a></p><p><br></p><p>Trecho do código do index.js para manipular os eventos do instalador</p><pre class="prettyprint linenums">// handling squirrel events
+if (require('electron-squirrel-startup')) return;
+
+// this should be placed at top of main.js to handle setup events quickly
+if (handleSquirrelEvent()) {
+   // squirrel event handled and app will exit in 1000ms, so don't do anything else
+   return;
+}
+function handleSquirrelEvent() {
+   if (process.argv.length === 1) {
+     return false;
+   }
+   const ChildProcess = require('child_process');
+   const path = require('path');
+   const appFolder = path.resolve(process.execPath, '..');
+   const rootAtomFolder = path.resolve(appFolder, '..');
+   const updateDotExe = path.resolve(path.join(rootAtomFolder, 'Update.exe'));
+   const exeName = path.basename(process.execPath);
+   const spawn = function(command, args) {
+      let spawnedProcess, error;
+      try {
+        spawnedProcess = ChildProcess.spawn(command, args, {detached: true});
+      } catch (error) {}
+        return spawnedProcess;
+      };
+   const spawnUpdate = function(args) {
+     return spawn(updateDotExe, args);
+   };
+   const squirrelEvent = process.argv[1];
+   switch (squirrelEvent) {
+     case '--squirrel-install':
+     case '--squirrel-updated':
+       // Optionally do things such as:
+       // - Add your .exe to the PATH
+       // - Write to the registry for things like file associations and
+       //   explorer context menus
+        // Install desktop and start menu shortcuts
+       spawnUpdate(['--createShortcut', exeName]);
+        setTimeout(app.quit, 1000);
+       return true;
+      case '--squirrel-uninstall':
+       // Undo anything you did in the --squirrel-install and
+       // --squirrel-updated handlers
+        // Remove desktop and start menu shortcuts
+       spawnUpdate(['--removeShortcut', exeName]);
+        setTimeout(app.quit, 1000);
+       return true;
+      case '--squirrel-obsolete':
+       // This is called on the outgoing version of your app before
+       // we update to the new version - it's the opposite of
+       // --squirrel-updated
+        app.quit();
+       return true;
+   }
+};</pre></p>
+                </div>
+                </div>
+                </div>
+                <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+                </body>
+                </html>
